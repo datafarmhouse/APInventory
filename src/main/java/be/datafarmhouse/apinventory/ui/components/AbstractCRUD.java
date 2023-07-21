@@ -63,7 +63,7 @@ public abstract class AbstractCRUD<T extends CRUDEntity> extends Div {
 
         splitLayout.addToPrimary(leftLayout);
         splitLayout.addToSecondary(rightLayout);
-        splitLayout.setSplitterPosition(15);
+        splitLayout.setSplitterPosition(50);
 
         add(splitLayout);
     }

@@ -11,6 +11,9 @@ public class ProductData implements CRUDEntity {
 
     @Id
     private String code;
+    private String ean;
     private String name;
-    private String description;
+
+    private Double weightInKg;
+    private Double widthInCm, heightInCm, lengthInCm;
 }
