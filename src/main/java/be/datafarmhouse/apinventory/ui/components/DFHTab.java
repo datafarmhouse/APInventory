@@ -12,6 +12,7 @@ public class DFHTab extends Tab {
         super(label);
         this.content = new VerticalLayout(children);
         this.content.setSizeFull();
+        setVisible(false);
     }
 
     public Component getContent() {
