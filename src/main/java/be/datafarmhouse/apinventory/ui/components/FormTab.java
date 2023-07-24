@@ -4,11 +4,11 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 
-public class DFHTab extends Tab {
+public class FormTab extends Tab {
 
     private VerticalLayout content;
 
-    public DFHTab(final String label, final Component... children) {
+    public FormTab(final String label, final Component... children) {
         super(label);
         this.content = new VerticalLayout(children);
         this.content.setSizeFull();

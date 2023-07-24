@@ -1,4 +1,4 @@
-package be.datafarmhouse.apinventory.product;
+package be.datafarmhouse.apinventory.products;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

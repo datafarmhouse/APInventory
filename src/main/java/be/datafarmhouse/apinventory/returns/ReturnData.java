@@ -1,12 +1,12 @@
-package be.datafarmhouse.apinventory.order;
+package be.datafarmhouse.apinventory.returns;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
-@Entity(name = "orders")
-public class OrderData {
+@Entity
+public class ReturnData {
 
     @Id
     private String code;

@@ -5,14 +5,14 @@ import com.vaadin.flow.component.tabs.Tabs;
 
 import java.util.Arrays;
 
-public class DFHTabs extends VerticalLayout {
+public class FormTabs extends VerticalLayout {
 
     private VerticalLayout content;
 
-    public DFHTabs(final DFHTab... dfhTabs) {
+    public FormTabs(final FormTab... dfhTabs) {
         this.content = new VerticalLayout();
         this.content.setSizeFull();
-        Arrays.stream(dfhTabs).map(DFHTab::getContent).forEach(this.content::add);
+        Arrays.stream(dfhTabs).map(FormTab::getContent).forEach(this.content::add);
         final Tabs tabs = new Tabs(dfhTabs);
 
         tabs.addSelectedChangeListener(event -> {
