@@ -1,6 +1,7 @@
 package be.datafarmhouse.apinventory.ui.components;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -19,6 +20,7 @@ public class FormEntity<T> extends CustomField<T> {
     private final Function<T, String> labelGenerator;
     private final TextField label;
     private final boolean readOnly;
+    private final Button searchButton, clearButton;
 
     public FormEntity(final String label, final String propertyName, final Binder binder, final Supplier<DataGrid<T>> createGrid, final Function<T, String> labelGenerator) {
         this(label, propertyName, binder, createGrid, labelGenerator, false);
@@ -40,7 +42,7 @@ public class FormEntity<T> extends CustomField<T> {
                         .withAlignItems(FlexComponent.Alignment.END)
                         .add(
                                 this.label,
-                                new Button(
+                                this.searchButton = new Button(
                                         VaadinIcon.SEARCH.create(),
                                         event -> {
                                             final Dialog dialog = new Dialog();
@@ -66,8 +68,8 @@ public class FormEntity<T> extends CustomField<T> {
                                             dialog.open();
                                         }
                                 ),
-                                new Button(
-                                        VaadinIcon.DEL.create(),
+                                this.clearButton = new Button(
+                                        VaadinIcon.CLOSE.create(),
                                         clickEvent -> {
                                             setValue(null);
                                             updateValue();
@@ -76,7 +78,7 @@ public class FormEntity<T> extends CustomField<T> {
                         ).build()
         );
 
-
+        this.clearButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         binder.forField(this).bind(propertyName);
     }
 
@@ -92,6 +94,8 @@ public class FormEntity<T> extends CustomField<T> {
 
     @Override
     public void setValue(final T value) {
+        this.searchButton.setVisible(value == null);
+        this.clearButton.setVisible(value != null);
         super.setValue(value);
         this.label.setValue(value == null ? " --- " : labelGenerator.apply(value));
     }

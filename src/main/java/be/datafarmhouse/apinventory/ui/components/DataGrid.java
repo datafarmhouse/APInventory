@@ -68,7 +68,7 @@ public abstract class DataGrid<T> extends CustomField<T> {
         final Button createButton = new Button(VaadinIcon.FILE_ADD.create(), this::onCreateEvent);
         final Button refreshButton = new Button(VaadinIcon.REFRESH.create(), event -> gridData.refreshAll());
 
-        Button prevButton = new Button("Previous Page", event -> {
+        Button prevButton = new Button(VaadinIcon.CHEVRON_LEFT.create(), event -> {
             if (dataPage.hasPrevious()) {
                 dataPage = getEntityRepository().findAll(dataPage.previousPageable());
                 grid.setItems(dataPage.getContent());
@@ -77,7 +77,7 @@ public abstract class DataGrid<T> extends CustomField<T> {
         prevButton.setEnabled(dataPage != null && dataPage.hasPrevious());
         prevButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        Button nextButton = new Button("Next Page", event -> {
+        Button nextButton = new Button(VaadinIcon.CHEVRON_RIGHT.create(), event -> {
             if (dataPage.hasNext()) {
                 dataPage = getEntityRepository().findAll(dataPage.nextPageable());
                 grid.setItems(dataPage.getContent());
