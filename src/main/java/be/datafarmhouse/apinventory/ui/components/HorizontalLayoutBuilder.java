@@ -12,6 +12,10 @@ public class HorizontalLayoutBuilder {
         horizontalLayout = new HorizontalLayout();
     }
 
+    public static HorizontalLayoutBuilder builder() {
+        return new HorizontalLayoutBuilder();
+    }
+
     public HorizontalLayoutBuilder add(final Component... components) {
         horizontalLayout.add(components);
         return this;

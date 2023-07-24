@@ -27,6 +27,7 @@ public abstract class DataGrid<T> extends CustomField<T> {
     protected Button saveButton;
     protected DataProvider<T, ?> gridData;
     protected Page<T> dataPage;
+    protected boolean selectionOnly = false;
     protected int pageSize = 10;
     protected int page = 0;
 
@@ -46,11 +47,16 @@ public abstract class DataGrid<T> extends CustomField<T> {
 
     protected abstract Component createForm();
 
+    public void setSelectionOnly(final boolean selectionOnly) {
+        this.selectionOnly = selectionOnly;
+    }
+
     private void initView() {
         setSizeFull();
         binder = new Binder<>(getEntityClass());
         SplitLayout mainLayout = new SplitLayout();
         mainLayout.setSizeFull();
+        mainLayout.setSplitterPosition(50);
 
         grid = new Grid<>(getEntityClass());
         grid.setColumns(getColumns());
@@ -95,7 +101,7 @@ public abstract class DataGrid<T> extends CustomField<T> {
     }
 
     public void setSelection(final T value) {
-        detailView.setVisible(value != null);
+        detailView.setVisible(!selectionOnly && value != null);
         this.value = value;
         binder.setBean(value);
 
@@ -142,4 +148,3 @@ public abstract class DataGrid<T> extends CustomField<T> {
         this.value = value;
     }
 }
-

@@ -1,10 +1,9 @@
 package be.datafarmhouse.apinventory.orders.purchase;
 
-import be.datafarmhouse.apinventory.ui.components.DataGrid;
-import be.datafarmhouse.apinventory.ui.components.FormTab;
-import be.datafarmhouse.apinventory.ui.components.FormTabs;
-import be.datafarmhouse.apinventory.ui.components.FormText;
+import be.datafarmhouse.apinventory.contacts.ContactDataGrid;
+import be.datafarmhouse.apinventory.ui.components.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class VendorDataGrid extends DataGrid<VendorData> {
 
     private final VendorRepository vendorRepository;
+    private final ApplicationContext context;
 
     @Override
     protected Class<VendorData> getEntityClass() {
@@ -53,8 +53,11 @@ public class VendorDataGrid extends DataGrid<VendorData> {
                         new FormText("Country", "address.country", binder)
                 ),
                 new FormTab(
-                        "Contact"//,
-                        //new FormEntity("Contact Person", "contactPerson", binder)
+                        "Contact",
+                        new FormEntity<>("Contact Person", "contact", binder,
+                                () -> context.getBean(ContactDataGrid.class),
+                                contact -> contact.getFirstName() + " " + contact.getLastName()
+                        )
                 )
         );
     }
