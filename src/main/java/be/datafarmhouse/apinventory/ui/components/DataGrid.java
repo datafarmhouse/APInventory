@@ -14,10 +14,12 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.DataProvider;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+@Log4j2
 public abstract class DataGrid<T> extends CustomField<T> {
 
     protected T value;
@@ -49,12 +51,13 @@ public abstract class DataGrid<T> extends CustomField<T> {
 
     public void setSelectionOnly(final boolean selectionOnly) {
         this.selectionOnly = selectionOnly;
+        log.info("selectionOnly: {}", selectionOnly);
     }
 
     private void initView() {
         setSizeFull();
         binder = new Binder<>(getEntityClass());
-        SplitLayout mainLayout = new SplitLayout();
+        final SplitLayout mainLayout = new SplitLayout();
         mainLayout.setSizeFull();
         mainLayout.setSplitterPosition(50);
 
@@ -84,7 +87,29 @@ public abstract class DataGrid<T> extends CustomField<T> {
         nextButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         // primary
-        mainLayout.addToPrimary(new VerticalLayoutBuilder().withSizeFull().add(new H2(getEntityClass().getSimpleName()), new HorizontalLayoutBuilder().add(refreshButton, createButton).build(), grid, new HorizontalLayoutBuilder().withWidthFull().withJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN).add(prevButton, nextButton).build()).build());
+        mainLayout.addToPrimary(
+                new VerticalLayoutBuilder()
+                        .withSizeFull()
+                        .add(
+                                new H2(getEntityClass().getSimpleName()),
+                                HorizontalLayoutBuilder.builder()
+                                        .withWidthFull()
+                                        .withJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN)
+                                        .add(
+                                                HorizontalLayoutBuilder.builder().add(
+                                                        refreshButton, createButton
+                                                ).build()
+                                        )
+                                        .add(
+                                                HorizontalLayoutBuilder.builder().add(
+                                                        prevButton, nextButton
+                                                ).build()
+                                        )
+                                        .build(),
+                                grid
+                        )
+                        .build()
+        );
 
         mainLayout.addToSecondary(this.detailView = new VerticalLayoutBuilder().withSizeFull().withVisible(false).add(createButtonPanel(), createForm()).build());
 
@@ -101,6 +126,7 @@ public abstract class DataGrid<T> extends CustomField<T> {
     }
 
     public void setSelection(final T value) {
+        log.info("selectionOnly: {}", selectionOnly);
         detailView.setVisible(!selectionOnly && value != null);
         this.value = value;
         binder.setBean(value);
@@ -113,11 +139,18 @@ public abstract class DataGrid<T> extends CustomField<T> {
         updateValue();
     }
 
+    @Override
+    public T getValue() {
+        log.info("value: {}", value);
+        return value;
+    }
+
     private Component createButtonPanel() {
 
         saveButton = new Button("SAVE", VaadinIcon.FILE.create());
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         saveButton.addClickListener(event -> {
+            log.info("saveButton clicked {}", value);
             setSelection(getEntityRepository().save(value));
             gridData.refreshAll();
         });

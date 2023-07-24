@@ -7,16 +7,17 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Log4j2
 public class FormEntity<T> extends CustomField<T> {
 
     private T value;
     private final Function<T, String> labelGenerator;
     private final TextField label;
-    private final Supplier<DataGrid<T>> createGrid;
     private final boolean readOnly;
 
     public FormEntity(final String label, final String propertyName, final Binder binder, final Supplier<DataGrid<T>> createGrid, final Function<T, String> labelGenerator) {
@@ -27,7 +28,6 @@ public class FormEntity<T> extends CustomField<T> {
         setWidthFull();
         setReadOnly(true);
         this.labelGenerator = labelGenerator;
-        this.createGrid = createGrid;
         this.readOnly = readOnly;
 
         this.label = new TextField(label);
@@ -36,6 +36,7 @@ public class FormEntity<T> extends CustomField<T> {
 
         add(
                 HorizontalLayoutBuilder.builder()
+                        .withSpacing(false)
                         .withAlignItems(FlexComponent.Alignment.END)
                         .add(
                                 this.label,
@@ -45,7 +46,7 @@ public class FormEntity<T> extends CustomField<T> {
                                             final Dialog dialog = new Dialog();
                                             final DataGrid<T> dataGrid = createGrid.get();
                                             final Button selectButton = new Button("Select", clickEvent -> {
-                                                setPresentationValue(dataGrid.getValue());
+                                                setValue(dataGrid.getValue());
                                                 dialog.close();
                                                 updateValue();
                                             });
@@ -57,11 +58,19 @@ public class FormEntity<T> extends CustomField<T> {
                                                 selectButton.setEnabled(selectEvent.getValue() != null);
                                             });
 
+                                            dialog.setWidthFull();
                                             dialog.setCloseOnEsc(true);
                                             dialog.setCloseOnOutsideClick(true);
                                             dialog.getFooter().add(selectButton);
-                                            dialog.add(createGrid.get());
+                                            dialog.add(dataGrid);
                                             dialog.open();
+                                        }
+                                ),
+                                new Button(
+                                        VaadinIcon.DEL.create(),
+                                        clickEvent -> {
+                                            setValue(null);
+                                            updateValue();
                                         }
                                 )
                         ).build()
@@ -79,6 +88,11 @@ public class FormEntity<T> extends CustomField<T> {
     @Override
     protected void setPresentationValue(final T value) {
         this.value = value;
-        //this.label.setValue(value == null ? " --- " : labelGenerator.apply(value));
+    }
+
+    @Override
+    public void setValue(final T value) {
+        super.setValue(value);
+        this.label.setValue(value == null ? " --- " : labelGenerator.apply(value));
     }
 }
