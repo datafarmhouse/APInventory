@@ -26,7 +26,6 @@ public abstract class DataGrid<T> extends CustomField<T> {
     protected Grid<T> grid;
     protected VerticalLayout detailView;
     protected Binder<T> binder;
-    protected Button saveButton;
     protected DataProvider<T, ?> gridData;
     protected Page<T> dataPage;
     protected boolean selectionOnly = false;
@@ -38,6 +37,9 @@ public abstract class DataGrid<T> extends CustomField<T> {
         loadData();
     }
 
+    protected boolean createAllowed() {
+        return true;
+    }
 
     protected abstract Class<T> getEntityClass();
 
@@ -51,7 +53,6 @@ public abstract class DataGrid<T> extends CustomField<T> {
 
     public void setSelectionOnly(final boolean selectionOnly) {
         this.selectionOnly = selectionOnly;
-        log.info("selectionOnly: {}", selectionOnly);
     }
 
     private void initView() {
@@ -96,9 +97,10 @@ public abstract class DataGrid<T> extends CustomField<T> {
                                         .withWidthFull()
                                         .withJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN)
                                         .add(
-                                                HorizontalLayoutBuilder.builder().add(
-                                                        refreshButton, createButton
-                                                ).build()
+                                                HorizontalLayoutBuilder.builder()
+                                                        .add(refreshButton)
+                                                        .add(createAllowed(), createButton)
+                                                        .build()
                                         )
                                         .add(
                                                 HorizontalLayoutBuilder.builder().add(
@@ -111,7 +113,13 @@ public abstract class DataGrid<T> extends CustomField<T> {
                         .build()
         );
 
-        mainLayout.addToSecondary(this.detailView = new VerticalLayoutBuilder().withSizeFull().withVisible(false).add(createButtonPanel(), createForm()).build());
+        mainLayout.addToSecondary(
+                this.detailView =
+                        new VerticalLayoutBuilder()
+                                .withSizeFull()
+                                .withVisible(false)
+                                .add(createButtonPanel(), createForm())
+                                .build());
 
         add(mainLayout);
     }
@@ -126,7 +134,6 @@ public abstract class DataGrid<T> extends CustomField<T> {
     }
 
     public void setSelection(final T value) {
-        log.info("selectionOnly: {}", selectionOnly);
         detailView.setVisible(!selectionOnly && value != null);
         this.value = value;
         binder.setBean(value);
@@ -141,29 +148,33 @@ public abstract class DataGrid<T> extends CustomField<T> {
 
     @Override
     public T getValue() {
-        log.info("value: {}", value);
         return value;
     }
 
     private Component createButtonPanel() {
-
-        saveButton = new Button("SAVE", VaadinIcon.FILE.create());
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        saveButton.addClickListener(event -> {
-            log.info("saveButton clicked {}", value);
-            setSelection(getEntityRepository().save(value));
-            gridData.refreshAll();
-        });
-
-        final Button deleteButton = new Button("DELETE", VaadinIcon.FILE_REMOVE.create());
-        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        deleteButton.addClickListener(event -> {
-            getEntityRepository().delete(value);
-            setSelection(null);
-            gridData.refreshAll();
-        });
-
-        return new HorizontalLayoutBuilder().add(saveButton, deleteButton).build();
+        return new HorizontalLayoutBuilder()
+                .add(
+                        ButtonBuilder.builder()
+                                .withText("SAVE").withIcon(VaadinIcon.FILE.create())
+                                .withThemeVariants(ButtonVariant.LUMO_PRIMARY)
+                                .withClickListener(event -> {
+                                    setSelection(getEntityRepository().save(value));
+                                    gridData.refreshAll();
+                                })
+                                .build()
+                )
+                .add(
+                        ButtonBuilder.builder()
+                                .withText("CANCEL").withIcon(VaadinIcon.FILE_REMOVE.create())
+                                .withThemeVariants(ButtonVariant.LUMO_ERROR)
+                                .withClickListener(event -> {
+                                    getEntityRepository().delete(value);
+                                    setSelection(null);
+                                    gridData.refreshAll();
+                                })
+                                .build()
+                )
+                .build();
     }
 
     @SneakyThrows

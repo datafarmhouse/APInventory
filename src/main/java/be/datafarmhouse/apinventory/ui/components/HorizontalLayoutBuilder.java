@@ -16,6 +16,11 @@ public class HorizontalLayoutBuilder {
         return new HorizontalLayoutBuilder();
     }
 
+
+    public HorizontalLayoutBuilder add(final boolean addAllowed, final Component... components) {
+        return addAllowed ? add(components) : this;
+    }
+
     public HorizontalLayoutBuilder add(final Component... components) {
         horizontalLayout.add(components);
         return this;

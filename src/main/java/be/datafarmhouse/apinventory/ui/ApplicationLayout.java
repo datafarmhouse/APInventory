@@ -34,15 +34,15 @@ public class ApplicationLayout extends AppLayout {
                         new SideNavItem("Home", HomeView.class),
                         SideNavItemBuilder.builder("Inventory").add(
                                 new SideNavItem("Products", ProductView.class, VaadinIcon.PACKAGE.create()),
-                                new SideNavItem("Stock Events", ProductView.class)
+                                new SideNavItem("Stock Events", StockEventView.class, VaadinIcon.PACKAGE.create())
                         ).build(),
                         SideNavItemBuilder.builder("Sales").add(
-                                new SideNavItem("Sales Orders", ProductView.class, VaadinIcon.INBOX.create())
+                                new SideNavItem("Sales Orders", ProductView.class, VaadinIcon.DOLLAR.create())
                         ).build(),
                         SideNavItemBuilder.builder("Purchases").add(
                                 new SideNavItem("Purchase Orders", ProductView.class, VaadinIcon.OUTBOX.create()),
-                                new SideNavItem("Vendors", VendorView.class),
-                                new SideNavItem("Contacts", ContactView.class)
+                                new SideNavItem("Vendors", VendorView.class, VaadinIcon.OUTBOX.create()),
+                                new SideNavItem("Contacts", ContactView.class, VaadinIcon.OUTBOX.create())
                         ).build()
                 )
                 .build();

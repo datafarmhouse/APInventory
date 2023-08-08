@@ -4,9 +4,13 @@ import be.datafarmhouse.apinventory.contacts.ContactData;
 import be.datafarmhouse.apinventory.util.AddressData;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity(name = "vendors")
 public class VendorData {
 
@@ -14,8 +18,8 @@ public class VendorData {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String code;
     private String name;
-    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn
+    @ManyToOne(cascade = {CascadeType.ALL})
     private AddressData address = new AddressData();
     @Email
     private String email;

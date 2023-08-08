@@ -2,13 +2,15 @@ package be.datafarmhouse.apinventory.stock;
 
 import be.datafarmhouse.apinventory.products.ProductData;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-@Data
+@ToString
+@RequiredArgsConstructor
 @Entity(name = "stock_events")
 @Table(indexes = {
         @Index(name = "stock_events_product", columnList = "product_code")
@@ -16,7 +18,7 @@ import lombok.Setter;
 public class StockEventData {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     @ManyToOne
     private ProductData product;

@@ -15,6 +15,11 @@ public class ProductDataGrid extends DataGrid<ProductData> {
     private final ProductRepository productRepository;
 
     @Override
+    protected boolean createAllowed() {
+        return false;
+    }
+
+    @Override
     protected Class<ProductData> getEntityClass() {
         return ProductData.class;
     }
